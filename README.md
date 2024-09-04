@@ -1,1 +1,1 @@
-# Blockchain Assignment-2
+# New Coin
