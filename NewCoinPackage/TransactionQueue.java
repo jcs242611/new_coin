@@ -13,8 +13,12 @@ public class TransactionQueue {
     if (numTransactions == 0) {
             firstTransaction = transaction;
             lastTransaction = transaction;
+            firstTransaction.prev = null;
+            lastTransaction.next = null;
+
         } else {
             lastTransaction.next = transaction;  // Assuming there's a `next` field in Transaction
+            transaction.prev = lastTransaction;
             lastTransaction = transaction;
         }
         numTransactions++;
@@ -26,6 +30,7 @@ public class TransactionQueue {
         }
         Transaction removedTransaction = firstTransaction;
         firstTransaction = firstTransaction.next;
+        firstTransaction.prev = null; 
         numTransactions--;
         return removedTransaction;
   }

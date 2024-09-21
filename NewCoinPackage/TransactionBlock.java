@@ -31,30 +31,72 @@ public class TransactionBlock {
         }
         return true;
   }
-// A method to generate a nonce
     private String generateNonce() {
-        // Placeholder for nonce generation (it could involve proof of work)
-       // return "12345";  // Replace with actual nonce generation logic
        String tempNonce = "";
-    String hash = "";
-    do {
-        tempNonce = String.valueOf(new Random().nextInt());  // Random nonce
+       String hash = "";
+       do {
+        tempNonce = String.valueOf(new Random().nextInt());
         String dataToHash = previous != null ? previous.dgst + trsummary + tempNonce : trsummary + tempNonce;
         hash = HelperClasses.sha256.encrypt(dataToHash);
-    } while (!hash.startsWith("0000"));  // Example of a difficulty check, adjust as necessary
-    return tempNonce;
+        } while (!hash.startsWith("0000")); 
+
+        return tempNonce;
     
     }
 
-    // Compute the digest for the block (e.g., a hash of the block data)
     private String computeDigest() {
         String dataToHash = previous != null ? previous.dgst + trsummary + nonce : trsummary + nonce;
-        return HelperClasses.sha256.encrypt(dataToHash);  // Assuming the sha256 class has an encrypt method
+        return HelperClasses.sha256.encrypt(dataToHash);
     }
 
-    // Verify individual transaction (can be extended to check signatures, coin sources, etc.)
     private boolean verifyTransaction(Transaction tx) {
-        // Placeholder for custom transaction verification logic
+        if(tx = null && tx.coinID = null && tx.Source = null && tx.Destination = null) {
+            return false;
+        }
+        
+
+    TransactionBlock srcBlock = t.coinsrc_block;
+    boolean isValidSource = false;
+
+    // Check if the coin's source block is valid by finding the source and destination relationship
+    if (srcBlock != null) {
+        for (Transaction tx : srcBlock.trarray) {
+            if (tx != null && tx.coinID.equals(t.coinID)) {
+                if (tx.Destination == t.Source) {
+                    isValidSource = true;
+                    break;
+                }
+            }
+        }
+        if (!isValidSource) {
+            return false;  // Invalid source for the transaction
+        }
+    }
+
+    // Step 2: Check for double-spending in the current block
+    int coinIDCount = 0;
+    for (Transaction tx : this.trarray) {
+        if (tx != null && tx.coinID.equals(t.coinID)) {
+            coinIDCount++;
+            if (coinIDCount > 1) {
+                return false;  // Double-spending detected within the current block
+            }
+        }
+    }
+
+    // Step 3: Check for double-spending in previous blocks
+    TransactionBlock currentBlock = this.previous;
+
+    while (currentBlock != null && currentBlock != srcBlock) {
+        for (Transaction tx : currentBlock.trarray) {
+            if (tx != null && tx.coinID.equals(t.coinID)) {
+                return false;  // Double-spending detected in previous blocks
+            }
+        }
+        currentBlock = currentBlock.previous;
+    }
+
+
         return true;
     }
 
