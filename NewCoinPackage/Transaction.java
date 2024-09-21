@@ -9,4 +9,6 @@ public class Transaction {
   public Members Source;
   public Members Destination;
   public TransactionBlock coinsrc_block;
+  public Transaction next;
+
 }

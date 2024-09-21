@@ -9,6 +9,12 @@ public class BlockChain_Honest {
   public TransactionBlock lastBlock;
 
   public void InsertBlock_Honest (TransactionBlock newBlock) {
+    if (newBlock.checkTransaction(newBlock.trarray)) {
+            newBlock.previous = lastBlock;
+            lastBlock = newBlock;
+        } else {
+            System.out.println("Block contains invalid transactions.");
+        }
 
   }
 }
